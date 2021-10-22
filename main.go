@@ -11,3 +11,11 @@ func router(app *fiber.App) {
 	app.Delete("/flashcards", flashcard.DeleteFlashcard)
 	app.Put("/flashcards", flashcard.PutFlashcard)
 }
+
+func main() {
+	app := fiber.New()
+
+	router(app)
+
+	app.Listen(":3000")
+}
