@@ -9,8 +9,8 @@ import (
 func router(app *fiber.App) {
 	app.Get("/flashcards", flashcard.GetFlashcards)
 	app.Post("/flashcards", flashcard.PostFlashcard)
-	app.Delete("/flashcards", flashcard.DeleteFlashcard)
-	app.Put("/flashcards", flashcard.PutFlashcard)
+	app.Delete("/flashcards/:id", flashcard.DeleteFlashcard)
+	app.Put("/flashcards/:id", flashcard.PutFlashcard)
 	app.Post("/scrape", flashcard.Scrape)
 }
 

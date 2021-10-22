@@ -14,6 +14,10 @@ type RequestPair struct {
 	TargLang    string
 }
 
+type RequestInc struct {
+	IncValue int
+}
+
 func GetFlashcards(ctx *fiber.Ctx) error {
 	var flashcards []Flashcard
 	database.Find(&flashcards)
@@ -42,8 +46,17 @@ func DeleteFlashcard(ctx *fiber.Ctx) error {
 }
 
 func PutFlashcard(ctx *fiber.Ctx) error {
-	fmt.Println("Put flashcard")
-	return ctx.JSON("")
+	id := ctx.Params("id")
+	var body RequestInc
+	json.Unmarshal(ctx.Body(), &body)
+	fmt.Println(body.IncValue)
+	var flashcard Flashcard
+	database.First(&flashcard, id)
+	if flashcard.SrcSentence == "" {
+		return ctx.Status(500).SendString("No flashcard found with ID " + id)
+	}
+	database.Model(&flashcard).Update("OverallScore", flashcard.OverallScore+body.IncValue)
+	return ctx.SendString("Flashcard successfully deleted")
 }
 
 func Scrape(ctx *fiber.Ctx) error {
