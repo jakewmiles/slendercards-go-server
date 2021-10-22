@@ -19,19 +19,28 @@ func GetFlashcards(ctx *fiber.Ctx) error {
 	database.Find(&flashcards)
 	return ctx.JSON(flashcards)
 }
+
 func PostFlashcard(ctx *fiber.Ctx) error {
-	fmt.Println(string(ctx.Body()))
 	flashcard := new(Flashcard)
 	err := ctx.BodyParser(flashcard)
 	if err != nil {
 		return ctx.Status(503).SendString(err.Error())
 	}
-	return ctx.JSON("")
+	database.Create(&flashcard)
+	return ctx.JSON(flashcard)
 }
+
 func DeleteFlashcard(ctx *fiber.Ctx) error {
-	fmt.Println("Delete flashcard")
-	return ctx.JSON("")
+	id := ctx.Params("id")
+	var flashcard Flashcard
+	database.First(&flashcard, id)
+	if flashcard.SrcSentence == "" {
+		return ctx.Status(500).SendString("No flashcard found with ID " + id)
+	}
+	database.Delete(&flashcard)
+	return ctx.SendString("Flashcard successfully deleted")
 }
+
 func PutFlashcard(ctx *fiber.Ctx) error {
 	fmt.Println("Put flashcard")
 	return ctx.JSON("")
