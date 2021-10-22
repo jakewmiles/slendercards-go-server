@@ -20,7 +20,7 @@ type RequestInc struct {
 
 func GetFlashcards(ctx *fiber.Ctx) error {
 	var flashcards []Flashcard
-	database.Find(&flashcards)
+	database.Order("overall_score asc").Find(&flashcards)
 	return ctx.JSON(flashcards)
 }
 
